@@ -6,7 +6,7 @@
 /*   By: sjaber <sjaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 13:50:00 by sjaber            #+#    #+#             */
-/*   Updated: 2025/02/13 16:46:21 by sjaber           ###   ########.fr       */
+/*   Updated: 2025/02/13 16:53:45 by sjaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@ static void	ack_handler(int signal)
 		g_ack = 1;
 	else if (signal == SIGUSR2)
 		ft_printf("Message received successfully!\n");
-	else
-		ft_printf("Error: Invalid signal received.\n");
 }
 
 
@@ -54,10 +52,9 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	pid = ft_atoi(argv[1]);
-	// Validate the server pid existence.
 	if (kill(pid, 0) != 0)
 	{
-		ft_printf("Error: Invalid server pid or process not active.\n");
+		ft_printf("Invalid server pid.\n");
 		return (1);
 	}
 	input_string = argv[2];
