@@ -6,7 +6,7 @@
 /*   By: sjaber <sjaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 13:50:00 by sjaber            #+#    #+#             */
-/*   Updated: 2025/02/12 19:14:33 by sjaber           ###   ########.fr       */
+/*   Updated: 2025/02/13 16:46:21 by sjaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,12 @@ static void	ack_handler(int signal)
 {
 	if (signal == SIGUSR1)
 		g_ack = 1;
+	else if (signal == SIGUSR2)
+		ft_printf("Message received successfully!\n");
+	else
+		ft_printf("Error: Invalid signal received.\n");
 }
+
 
 static void	send_char(char c, pid_t pid)
 {
@@ -38,32 +43,26 @@ static void	send_char(char c, pid_t pid)
 	}
 }
 
-static int	valid_pid(char *pid)
-{
-	while (*pid)
-	{
-		if (!isdigit(*pid))
-			return (0);
-		pid++;
-	}
-	return (1);
-}
-
 int	main(int argc, char **argv)
 {
 	pid_t	pid;
 	char	*input_string;
 
 	if (argc != 3)
-		return (1);
-	if (!valid_pid(argv[1]))
 	{
-		ft_printf("Invalid PID\n");
-		exit(1);
+		ft_printf("Usage: %s [PID] [message]\n", argv[0]);
+		return (1);
 	}
 	pid = ft_atoi(argv[1]);
+	// Validate the server pid existence.
+	if (kill(pid, 0) != 0)
+	{
+		ft_printf("Error: Invalid server pid or process not active.\n");
+		return (1);
+	}
 	input_string = argv[2];
 	signal(SIGUSR1, ack_handler);
+	signal(SIGUSR2, ack_handler);
 	while (*input_string)
 	{
 		send_char(*input_string, pid);

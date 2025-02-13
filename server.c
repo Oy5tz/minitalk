@@ -6,7 +6,7 @@
 /*   By: sjaber <sjaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 13:44:57 by sjaber            #+#    #+#             */
-/*   Updated: 2025/02/12 19:17:36 by sjaber           ###   ########.fr       */
+/*   Updated: 2025/02/13 16:40:38 by sjaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static char	*g_message = NULL;
 
-static void	helper(void)
+static void	display_message(void)
 {
 	if (!g_message)
 		return ;
@@ -58,7 +58,8 @@ static void	signal_handler(int sig, siginfo_t *info, void *context)
 		if (c == '\0')
 		{
 			if (g_message != NULL)
-				helper();
+				display_message();
+			kill(info->si_pid, SIGUSR2);
 		}
 		else
 			append_char(c);
@@ -74,7 +75,8 @@ int	main(void)
 {
 	struct sigaction	sa;
 
-	ft_printf("Server PID: %d\n", getpid());
+	int pid = getpid();
+	ft_printf("Server PID: %d\n", pid);
 	sa.sa_sigaction = signal_handler;
 	sa.sa_flags = SA_SIGINFO;
 	sigemptyset(&sa.sa_mask);
